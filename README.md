@@ -45,7 +45,25 @@ The platform allows users to list, discover, and manage vacation rentals — off
 | **Email Service** | Nodemailer |
 | **Deployment** | (Planned: Render / Vercel) |
 
----
+## 🧱 Future Improvements
 
-## 📁 Folder Structure
+- 💳 Payment gateway integration (Stripe or PayPal)  
+- 🧭 Advanced search and filters  
+- ⭐ Reviews and ratings system  
+- 💬 Real-time chat between hosts and guests  
+- 🗺️ Map integration (Google Maps / Leaflet)  
+
+
+## 🧑‍💻 Author
+
+**Faiyaz**  
+🌐 Web Developer | Passionate about building full-stack, scalable web apps  
+📧 [Email me](mailto:your-email@example.com)  
+💼 [LinkedIn](https://www.linkedin.com/in/yourprofile)  
+💻 [GitHub](https://github.com/<your-username>)  
+
+
+## 📄 License
+
+This project is licensed under the **MIT License** — feel free to use and modify it.
 
