@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    // 🗂️ File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // ⚙️ Environment (ESM + Node)
+    "target": "ES2022", // more stable for Node
+    "module": "NodeNext", // ✅ correct for ESM in Node
+    "moduleResolution": "NodeNext", // ✅ required when using NodeNext
+    "lib": ["ES2022"], // optional, helps IntelliSense
+    "types": ["node"], // ✅ needed for Node.js globals (process, __dirname, etc.)
+
+    // ⚡ Output Settings
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // 🧠 Type Safety
+    "strict": true,
+    // "noUncheckedIndexedAccess": true,
+    // "exactOptionalPropertyTypes": true,
+    // "noImplicitAny": true,
+    "skipLibCheck": true,
+    // 💅 Style / Build Behavior
+    "verbatimModuleSyntax": true, // ✅ keep your ESM imports exactly as written
+    "isolatedModules": true, // ✅ needed for ts-node-dev and incremental builds
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
