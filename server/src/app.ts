@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 const app = express();
 import userRoutes from "./routes/user.routes.js";
+import listingRoutes from "./routes/listing.routes.js";
 
 // Middleware
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
@@ -12,6 +13,8 @@ app.use(express.static("public"));
 
 // Routes
 app.use("/api/auth", userRoutes);
+app.use("/api/listings", listingRoutes);
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const status = err.status || 500;
   const message = err.message || "Something went wrong";
