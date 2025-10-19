@@ -12,7 +12,7 @@ const uploadToCloudinary = async (
     const result: UploadApiResponse = await cloudinary.uploader.upload(
       filePath,
       {
-        folder: "assets", // Optional folder
+        folder: "triphaven/listings", // Optional folder
         resource_type: "auto", // Automatically detect type
       }
     );
