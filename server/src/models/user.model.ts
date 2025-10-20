@@ -49,7 +49,6 @@ const userSchema = new Schema<IUser>(
     },
     refreshToken: {
       type: String,
-      required: true,
     },
     provider: {
       type: String,

@@ -8,14 +8,13 @@ export const authenticate = (
   next: NextFunction
 ) => {
   try {
-    const authHeader = req.headers.authorization;
-
+    const authHeader = req.headers.authorization as string;
+    console.log(authHeader);
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new ExpressError(401, "Authorization token missing");
     }
 
     const token = authHeader.split(" ")[1];
-
     // Verify token
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
       userId: string;
@@ -30,6 +29,7 @@ export const authenticate = (
 
     next(); // proceed to the next middleware/controller
   } catch (err: any) {
+    console.log(err);
     next(new ExpressError(401, "Invalid or expired token"));
   }
 };

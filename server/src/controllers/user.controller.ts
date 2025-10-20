@@ -26,7 +26,6 @@ export const signup = handleAsync(async (req: Request, res: Response) => {
   }
 
   const picture = req.file;
-  console.log(req.file);
   let pictureUrl;
   if (picture) {
     pictureUrl = await uploadToCloudinary(picture.path);
@@ -100,7 +99,7 @@ export const signin = handleAsync(async (req: Request, res: Response) => {
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    // sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   // 4️⃣ Respond
@@ -131,7 +130,7 @@ export const signout = handleAsync(async (req: Request, res: Response) => {
   res.clearCookie("refresh-token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    // sameSite: "strict",
   });
 
   // 4️⃣ Respond
