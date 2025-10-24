@@ -1,11 +1,12 @@
-import type { RootState } from "@/store/store";
+import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const user = useSelector((state: RootState) => state.auth.authData);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const token = useSelector((state: RootState) => state.auth.accessToken);
   // If no user, redirect to login
-  if (!user) {
+  if (!user || !token) {
     return <Navigate to="/signin" replace />;
   }
 

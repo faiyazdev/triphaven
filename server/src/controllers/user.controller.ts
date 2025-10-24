@@ -49,8 +49,8 @@ export const signup = handleAsync(async (req: Request, res: Response) => {
   }
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: false,
+    sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   // 4️⃣ Respond
@@ -98,8 +98,8 @@ export const signin = handleAsync(async (req: Request, res: Response) => {
 
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    // sameSite: "strict",
+    secure: false,
+    sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   // 4️⃣ Respond
@@ -129,8 +129,8 @@ export const signout = handleAsync(async (req: Request, res: Response) => {
   // 3️⃣ Clear the refresh-token cookie
   res.clearCookie("refresh-token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    // sameSite: "strict",
+    secure: false,
+    sameSite: "lax",
   });
 
   // 4️⃣ Respond
@@ -142,6 +142,7 @@ export const signout = handleAsync(async (req: Request, res: Response) => {
 export const refreshAccessToken = handleAsync(
   async (req: Request, res: Response) => {
     // 1️⃣ Get refresh token from cookies
+    console.log("refresh token endpoint", req.cookies);
     const oldRefreshToken = req.cookies["refresh-token"];
     if (!oldRefreshToken) {
       return res
@@ -164,7 +165,6 @@ export const refreshAccessToken = handleAsync(
     if (!user || user.refreshToken !== oldRefreshToken) {
       return res.status(401).json({ error: "Refresh token is invalid" });
     }
-
     // 4️⃣ Generate new tokens
     const newAccessToken = user.generateAccessToken();
     const newRefreshToken = user.generateRefreshToken();
@@ -176,8 +176,8 @@ export const refreshAccessToken = handleAsync(
     // 6️⃣ Send cookie & response
     res.cookie("refresh-token", newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 

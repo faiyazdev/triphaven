@@ -12,29 +12,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link, useNavigate } from "react-router";
-import type { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
-import api from "@/store/features/axios-instance";
-import { removeCredentials } from "@/store/features/auth/authSlice";
+import { removeCredentials } from "@/redux/api/features/auth/authSlice";
+import type { RootState } from "@/redux/store";
+import { useLogoutMutation } from "@/redux/api/services/authApi";
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.authData);
+  const [logout] = useLogoutMutation();
+  const token = useSelector((state: RootState) => state.auth.accessToken);
   const handleLogout = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
     try {
-      const res = await api.post("auth/signout");
+      const res = await logout().unwrap();
       if (res.data.success) {
         console.log("Response:", res.data);
         dispatch(removeCredentials());
         navigate("/signin");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error("Logout failed:", err);
     }
   };
   return (
@@ -45,13 +46,21 @@ export const Navbar: React.FC = () => {
           TripHaven
         </Link>
         <div className="hidden md:flex space-x-4">
-          {user ? (
-            <Link
-              to="/"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              Listings
-            </Link>
+          {token ? (
+            <>
+              <Link
+                to="/"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                Listings
+              </Link>
+              <Link
+                to="/create-listing"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                create-Listing
+              </Link>
+            </>
           ) : (
             <>
               <Link
@@ -82,7 +91,7 @@ export const Navbar: React.FC = () => {
         <ModeToggle />
 
         {/* Profile dropdown */}
-        {user && (
+        {token && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer hover:opacity-80 transition">

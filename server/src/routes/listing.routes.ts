@@ -11,7 +11,7 @@ import {
 } from "../controllers/listing.controller.js";
 const router = express.Router();
 
-router.get("/", getAllListings);
+router.get("/", authenticate, getAllListings);
 router.post("/", authenticate, upload.single("image"), createListing);
 router.get("/:id", getListingById);
 router.put("/:id", upload.single("image"), updateListing);

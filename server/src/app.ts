@@ -4,13 +4,14 @@ import cors from "cors";
 const app = express();
 import userRoutes from "./routes/user.routes.js";
 import listingRoutes from "./routes/listing.routes.js";
+import cookieParser from "cookie-parser";
 
 // Middleware
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-
+app.use(cookieParser());
 // Routes
 app.use("/api/auth", userRoutes);
 app.use("/api/listings", listingRoutes);

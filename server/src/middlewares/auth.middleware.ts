@@ -9,9 +9,8 @@ export const authenticate = (
 ) => {
   try {
     const authHeader = req.headers.authorization as string;
-    console.log(authHeader);
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new ExpressError(401, "Authorization token missing");
+      throw new ExpressError(401, "Unauthorized");
     }
 
     const token = authHeader.split(" ")[1];

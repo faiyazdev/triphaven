@@ -2,8 +2,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import api from "@/store/features/axios-instance";
-
 import {
   Form,
   FormControl,
@@ -25,17 +23,16 @@ import { Input } from "@/components/ui/input";
 import { signupUserSchema } from "@/schemas/user.schema";
 import { Link, Navigate, useNavigate } from "react-router";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { setCredentials } from "@/store/features/auth/authSlice";
+import { setCredentials } from "@/redux/api/features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "@/store/store";
+import type { RootState } from "@/redux/store";
+import { useSignupMutation } from "@/redux/api/services/authApi";
 
 const formSchema = signupUserSchema;
 
 export default function SignupForm() {
-  const user = useSelector((state: RootState) => state.auth.authData);
-
-  const [isLoading, setIsLoading] = useState(false);
+  const token = useSelector((state: RootState) => state.auth.accessToken);
+  const [signup, { isLoading }] = useSignupMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,44 +46,27 @@ export default function SignupForm() {
     },
   });
   // If user logged in, redirect to home page
-  if (user) return <Navigate to="/" replace />;
+  if (token) return <Navigate to="/" replace />;
   async function onSubmit(formData: z.infer<typeof formSchema>) {
     try {
-      // Assuming an async registration function
-      setIsLoading(true);
-      const data = new FormData();
-      data.append("username", formData.username);
-      data.append("name", formData.name);
-      data.append("email", formData.email);
-      data.append("password", formData.password);
-      // 🕐 Simulate async API call (e.g. register user)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const res = await api.post("/auth/signup", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true, // important if you're setting cookies (refresh-token)
-      });
-      if (res.data.success) {
-        const accessToken = res.data.accessToken;
-        const user = res.data.user;
+      const res = await signup(formData).unwrap();
+      if (res?.success) {
+        const accessToken = res.accessToken;
+        const user = res.user;
         dispatch(setCredentials({ user, accessToken }));
-        console.log("Response:", res.data);
+        console.log("Response:", res);
         navigate("/");
-      } // toast(
-      //   <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-      //     <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-      //   </pre>
-      // );
+      }
     } catch (error) {
       console.error("Form submission error", error);
-
+      navigate("/signup");
       toast.error("Failed to submit the form. Please try again.");
     } finally {
-      setIsLoading(false);
       formData = {
-        username: "",
-        name: "",
         email: "",
         password: "",
+        username: "",
+        name: "",
         confirmPassword: "",
       };
     }

@@ -5,7 +5,7 @@ import App from "./App.tsx";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "./components/providers/theme-provider.tsx";
 import { BrowserRouter } from "react-router-dom";
-import { store } from "./store/store.ts";
+import { store } from "./redux/store.ts";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
