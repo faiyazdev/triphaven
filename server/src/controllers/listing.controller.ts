@@ -186,7 +186,7 @@ export const updateListing = handleAsync(
 export const deleteListing = handleAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-
+    console.log(id);
     // 1️⃣ Find the listing
     const listing = await Listing.findById(id);
     if (!listing) {

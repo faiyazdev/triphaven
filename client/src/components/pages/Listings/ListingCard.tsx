@@ -1,5 +1,7 @@
+import { Button } from "@/components/ui/button";
 import type { IListing } from "@/types/types";
 import React from "react";
+import { Link } from "react-router";
 
 interface ListingCardProps {
   listing: IListing;
@@ -21,6 +23,9 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
         <p className="mt-2 text-gray-700">{listing.description}</p>
         <p className="mt-2 font-bold">${listing.price} / night</p>
       </div>
+      <Link to={`listings/${listing._id}`}>
+        <Button variant={"outline"}>View more!</Button>
+      </Link>
     </div>
   );
 };

@@ -29,8 +29,8 @@ export const Navbar: React.FC = () => {
     e.preventDefault();
     try {
       const res = await logout().unwrap();
-      if (res.data.success) {
-        console.log("Response:", res.data);
+      if (res.success) {
+        console.log("Response:", res.message);
         dispatch(removeCredentials());
         navigate("/signin");
       }

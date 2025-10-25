@@ -36,10 +36,8 @@ export const authApi = baseApi.injectEndpoints({
 
     logout: builder.mutation<
       {
-        data: {
-          success: boolean;
-          message: string;
-        };
+        success: boolean;
+        message: string;
       },
       void
     >({

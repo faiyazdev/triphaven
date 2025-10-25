@@ -1,18 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useCreateListingMutation } from "@/redux/api/services/listingApi";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  useGetListingByIdQuery,
+  useUpdateListingByIdMutation,
+} from "@/redux/api/services/listingApi";
 
-const CreateListing: React.FC = () => {
-  const [createListing, { isLoading }] = useCreateListingMutation();
+const UpdateListing = () => {
+  const { id } = useParams<{ id: string }>();
+  const { data, isLoading: loadingListing } = useGetListingByIdQuery(id!);
+  const [updateListing, { isLoading: updating }] =
+    useUpdateListingByIdMutation();
+  const navigate = useNavigate();
   const [preview, setPreview] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -20,6 +26,21 @@ const CreateListing: React.FC = () => {
     location: "",
     country: "",
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (data?.data) {
+      const l = data.data;
+      setFormData({
+        title: l.title,
+        price: l.price.toString(),
+        description: l.description,
+        location: l.location,
+        country: l.country,
+      });
+      setPreview(l.image?.url || null);
+    }
+  }, [data]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -46,31 +67,24 @@ const CreateListing: React.FC = () => {
     if (imageFile) fd.append("image", imageFile);
 
     try {
-      const res = await createListing(fd).unwrap();
-      console.log(`✅ ${res.message}`);
-      setFormData({
-        title: "",
-        price: "",
-        description: "",
-        location: "",
-        country: "",
-      });
-      setImageFile(null);
-      setPreview(null);
+      const res = await updateListing({ id: id!, formData: fd }).unwrap();
+      if (res.success) {
+        console.log(res.data);
+        navigate("/");
+      }
     } catch (err) {
-      console.error("Error creating listing:", err);
-      alert("❌ Failed to create listing");
+      console.error(err);
+      alert("Failed to update listing.");
     }
   };
+
+  if (loadingListing) return <p className="text-center mt-10">Loading...</p>;
 
   return (
     <Card className="max-w-2xl mx-auto mt-10 shadow-lg rounded-2xl">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">
-          Create New Listing
-        </CardTitle>
+        <CardTitle className="text-xl font-semibold">Update Listing</CardTitle>
       </CardHeader>
-
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -131,7 +145,7 @@ const CreateListing: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="image">Image</Label>
+            <Label htmlFor="image">Listing Image</Label>
             <Input
               id="image"
               type="file"
@@ -147,8 +161,8 @@ const CreateListing: React.FC = () => {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating..." : "Create Listing"}
+          <Button type="submit" className="w-full" disabled={updating}>
+            {updating ? "Updating..." : "Update Listing"}
           </Button>
         </form>
       </CardContent>
@@ -156,4 +170,4 @@ const CreateListing: React.FC = () => {
   );
 };
 
-export default CreateListing;
+export default UpdateListing;
