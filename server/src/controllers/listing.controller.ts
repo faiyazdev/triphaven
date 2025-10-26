@@ -1,5 +1,6 @@
 import { cloudinary } from "../config/cloudinary.js";
 import Listing from "../models/listing.model.js";
+import Review from "../models/Review.model.js";
 import { deleteFile, uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 import handleAsync from "../utils/HandleAsync.js";
 import type { Request, Response } from "express";
@@ -18,7 +19,16 @@ export const getAllListings = handleAsync(
     }
     if (guests) filters.maxGuests = { $gte: Number(guests) };
 
-    const listings = await Listing.find(filters).sort({ createdAt: -1 });
+    const listings = await Listing.find(filters)
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          select: "username email", // optional — only bring what you need
+        },
+      })
+      .populate("author");
 
     res.status(200).json({
       success: true,
@@ -44,7 +54,15 @@ export const getListingById = handleAsync(
     }
 
     // Find listing and optionally populate owner or reviews
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id)
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          select: "username email", // optional — only bring what you need
+        },
+      })
+      .populate("author");
     // .populate("owner", "name email avatar") // optional: populate user info
     // .populate("reviews"); // optional: populate reviews if available
 
@@ -108,6 +126,7 @@ export const createListing = handleAsync(
       price,
       location,
       country,
+      author: req.user?.userId,
     });
 
     // ✅ 4️⃣ Respond to client
@@ -126,7 +145,7 @@ export const updateListing = handleAsync(
     const { title, description, price, location, country } = req.body;
 
     // 🧩 1️⃣ Find existing listing
-    const existingListing = await Listing.findById(id);
+    const existingListing = await Listing.findById(id).populate("author");
     if (!existingListing) {
       return res.status(404).json({
         success: false,
@@ -134,6 +153,12 @@ export const updateListing = handleAsync(
       });
     }
 
+    if (existingListing.author.toString() !== req.user?.userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to update this listing",
+      });
+    }
     // 🖼️ 2️⃣ Handle image upload (if provided)
     let imageData = existingListing.image;
 
@@ -186,16 +211,21 @@ export const updateListing = handleAsync(
 export const deleteListing = handleAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    console.log(id);
     // 1️⃣ Find the listing
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
+
     if (!listing) {
       return res.status(404).json({
         success: false,
         message: "Listing not found!",
       });
     }
-
+    if (listing.author.toString() !== req.user?.userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to delete this listing",
+      });
+    }
     // 2️⃣ Remove image from Cloudinary if it exists
     if (listing.image?.filename) {
       try {
@@ -205,7 +235,10 @@ export const deleteListing = handleAsync(
         // Not fatal — we can still delete the listing
       }
     }
-
+    // reviews as well
+    if (listing.reviews.length) {
+      await Review.deleteMany({ _id: { $in: listing.reviews } });
+    }
     // 3️⃣ Delete the listing
     await listing.deleteOne(); // triggers pre-remove hooks if any
 

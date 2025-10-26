@@ -58,7 +58,35 @@ export const listingApi = baseApi.injectEndpoints({
         "Listings",
       ],
     }),
+    addReview: builder.mutation<
+      { success: boolean; message: string },
+      { id: string; comment: string; rating: number }
+    >({
+      query: ({ id, comment, rating }) => ({
+        url: `/listings/${id}/reviews`,
+        method: "POST",
+        body: { comment, rating },
+      }),
+      // Revalidate the specific listing after adding a review
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Listing", id },
+        "Listings",
+      ],
+    }),
+    deleteReview: builder.mutation<
+      { success: boolean; message: string },
+      { listingId: string; reviewId: string }
+    >({
+      query: ({ listingId, reviewId }) => ({
+        url: `/listings/${listingId}/reviews/${reviewId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, { listingId }) => [
+        { type: "Listing", id: listingId },
+      ],
+    }),
   }),
+
   overrideExisting: false, // true if you want to override an existing endpoint with the same name
 });
 
@@ -68,4 +96,6 @@ export const {
   useDeleteListingByIdMutation,
   useUpdateListingByIdMutation,
   useCreateListingMutation,
+  useAddReviewMutation,
+  useDeleteReviewMutation,
 } = listingApi;

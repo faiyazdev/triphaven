@@ -51,7 +51,16 @@ export default function Login() {
       if (res?.success) {
         const accessToken = res.accessToken;
         const user = res.user;
-        dispatch(setCredentials({ user, accessToken }));
+        dispatch(
+          setCredentials({
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+            },
+            accessToken,
+          })
+        );
         console.log("Response:", res);
         navigate("/");
       }

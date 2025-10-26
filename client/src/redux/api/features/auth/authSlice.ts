@@ -1,9 +1,13 @@
-import type { UserType } from "@/types/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 // type PayloadAction
 
 export interface AuthState {
-  user: UserType | null;
+  user: {
+    id: string;
+    name: string;
+    username?: string;
+    email: string;
+  } | null;
   accessToken: string | null;
 }
 
@@ -19,7 +23,12 @@ export const authSlice = createSlice({
     setCredentials: (
       state,
       action: PayloadAction<{
-        user: UserType;
+        user: {
+          id: string;
+          name: string;
+          username?: string;
+          email: string;
+        };
         accessToken: string;
       }>
     ) => {

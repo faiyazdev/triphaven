@@ -9,9 +9,21 @@ export interface IListing {
   price: number;
   location: string;
   country: string;
+  author: UserType;
+  // The reviews are ObjectId references to Review documents
+  reviews: IReview[];
+}
+
+export interface IReview {
+  _id: string;
+  comment: string;
+  rating: number;
+  user: UserType;
+  createdAt?: Date;
 }
 
 export type UserType = {
+  _id: string;
   name: string;
   email: string;
   username?: string;
