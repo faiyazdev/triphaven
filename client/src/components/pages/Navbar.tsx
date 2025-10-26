@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
 import { removeCredentials } from "@/redux/api/features/auth/authSlice";
-import type { RootState } from "@/redux/store";
+import { persistor, type RootState } from "@/redux/store";
 import { useLogoutMutation } from "@/redux/api/services/authApi";
 
 export const Navbar: React.FC = () => {
@@ -33,6 +33,7 @@ export const Navbar: React.FC = () => {
         console.log("Response:", res.message);
         dispatch(removeCredentials());
         navigate("/signin");
+        persistor.purge(); // clear persisted auth state
       }
     } catch (err) {
       console.error("Logout failed:", err);

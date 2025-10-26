@@ -13,7 +13,8 @@ const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:5000/api",
   credentials: "include", // important for cookie-based refresh
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.accessToken;
+    const state = getState() as RootState;
+    const token = state.auth?.accessToken;
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }
