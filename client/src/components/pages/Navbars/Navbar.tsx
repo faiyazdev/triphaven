@@ -24,6 +24,7 @@ export const Navbar: React.FC = () => {
   const dispatch = useDispatch();
   const [logout] = useLogoutMutation();
   const token = useSelector((state: RootState) => state.auth.accessToken);
+  const user = useSelector((state: RootState) => state.auth.user);
   const handleLogout = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -62,6 +63,14 @@ export const Navbar: React.FC = () => {
               >
                 create-Listing
               </Link>
+              {user?.email === "faiyaz@gmail.com" && (
+                <Link
+                  to="/users"
+                  className="text-sm  hover:text-primary transition-colors"
+                >
+                  Users
+                </Link>
+              )}
             </>
           ) : (
             <>
