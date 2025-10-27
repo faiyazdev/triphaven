@@ -24,11 +24,6 @@ export interface IUserMethods {
   generateRefreshToken(): string;
 }
 
-/**
- * If you prefer, you can create a type alias for the full model:
- * type UserModel = Model<IUser, {}, IUserMethods>;
- */
-
 const userSchema = new Schema<
   IUser,
   Model<IUser, {}, IUserMethods>,
@@ -75,10 +70,6 @@ const userSchema = new Schema<
   { timestamps: true }
 );
 
-/**
- * Pre-save hook — use async function and type `this` so TS knows about `isModified`.
- * We hash the password only if it was modified.
- */
 userSchema.pre("save", async function (next) {
   // TypeScript: 'this' is a Mongoose Document with IUser properties
   const doc = this as mongoose.Document & IUser;
@@ -95,9 +86,7 @@ userSchema.pre("save", async function (next) {
     next(err as any);
   }
 });
-/**
- * Instance methods
- */
+
 userSchema.methods.isPasswordCorrect = async function (
   this: IUser & IUserMethods,
   password: string
@@ -111,7 +100,7 @@ userSchema.methods.generateAccessToken = function (this: IUser): string {
   if (!secret)
     throw new Error("ACCESS_TOKEN_SECRET is not defined in environment");
   return jwt.sign({ userId: this._id, email: this.email }, secret, {
-    expiresIn: "15s",
+    expiresIn: "20m",
   });
 };
 
