@@ -10,7 +10,7 @@ import { removeCredentials, setCredentials } from "../features/auth/authSlice";
 
 // ✅ 1. Base query configuration
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api",
+  baseUrl: "https://triphaven-h8xw.onrender.com/api",
   credentials: "include", // important for cookie-based refresh
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
@@ -49,7 +49,7 @@ const baseQueryWithReauth: BaseQueryFn<
       const user = (api.getState() as RootState).auth.user;
 
       // ✅ Update Redux store and localStorage
-      api.dispatch(setCredentials({ user, accessToken }));
+      api.dispatch(setCredentials({ user: user!, accessToken }));
 
       // Retry the original request with new token
       result = await baseQuery(args, api, extraOptions);
