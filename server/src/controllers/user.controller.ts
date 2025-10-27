@@ -8,7 +8,7 @@ import { deleteFile, uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 // ========================================================
 export const getAllUsers = handleAsync(async (req: Request, res: Response) => {
   const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "faiyaz@gmail.com";
-
+  console.log(req.user?.email);
   if (req.user?.email !== ADMIN_EMAIL) {
     return res.status(403).json({
       success: false,
@@ -16,16 +16,18 @@ export const getAllUsers = handleAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const users = await User.find({})
+  const users = (await User.find({})
     .sort({ createdAt: -1 })
     .populate({
       path: "listings",
-      populate: {
-        path: "author",
-        select: "name email",
-      },
+      populate: { path: "author", select: "name email" },
     })
-    .lean();
+    .lean()) as (User & { listings?: any[] })[];
+
+  const normalizedUsers = users.map((user) => ({
+    ...user,
+    listings: user.listings || [],
+  }));
 
   return res.status(200).json({
     success: true,

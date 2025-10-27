@@ -8,7 +8,7 @@ import {
 } from "../controllers/user.controller.js";
 const router = express.Router();
 
-router.get("/", getAllUsers);
+router.get("/", authenticate, getAllUsers);
 router.get("me", authenticate, getMyProfile);
 router.put("/me", authenticate, upload.single("avatar"), updateMyProfile);
 

@@ -8,13 +8,13 @@ export interface IUser {
   username: string;
   name?: string;
   email: string;
-  picture?: string;
+  avatar?: string;
   password?: string; // optional because OAuth users may not have a password
   refreshToken?: string;
   provider: "google" | "manual";
   createdAt?: Date;
   updatedAt?: Date;
-  myListings?: (Types.ObjectId | IListing)[];
+  listings?: (Types.ObjectId | IListing)[];
 }
 
 /**
@@ -52,7 +52,7 @@ const userSchema = new Schema<
       lowercase: true,
       trim: true,
     },
-    picture: {
+    avatar: {
       type: String,
       trim: true,
     },
@@ -68,7 +68,13 @@ const userSchema = new Schema<
       enum: ["google", "manual"],
       default: "manual",
     },
-    myListings: [{ type: Schema.Types.ObjectId, ref: "Listing" }],
+    listings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Listing",
+        default: [], // ✅ default empty array
+      },
+    ],
   },
   { timestamps: true }
 );
