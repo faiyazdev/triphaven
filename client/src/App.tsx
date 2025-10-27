@@ -1,5 +1,5 @@
 import Login from "./components/auth/Login";
-import { Navbar } from "./components/pages/Navbar";
+import { Navbar } from "./components/pages/Navbars/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import SignupForm from "./components/auth/Register";
 import { Routes, Route } from "react-router-dom";

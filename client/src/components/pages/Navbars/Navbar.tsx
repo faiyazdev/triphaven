@@ -13,10 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { removeCredentials } from "@/redux/api/features/auth/authSlice";
 import { persistor, type RootState } from "@/redux/store";
 import { useLogoutMutation } from "@/redux/api/services/authApi";
+import MobileNav from "./MobileNav";
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -40,24 +41,24 @@ export const Navbar: React.FC = () => {
     }
   };
   return (
-    <nav className="flex items-center justify-between px-6 py-3 border-b bg-background sticky top-0 z-50">
+    <nav className="flex text-custom font-['Geist'] items-center justify-between px-6 py-3 border-b bg-background sticky top-0 z-50">
       {/* LEFT SIDE */}
       <div className="flex items-center space-x-6">
         <Link to="/" className="text-xl font-semibold">
           TripHaven
         </Link>
-        <div className="hidden md:flex space-x-4">
+        <div className="ml-14 hidden md:flex font-semibold capitalize space-x-4">
           {token ? (
             <>
               <Link
                 to="/"
-                className="text-sm font-medium hover:text-primary transition-colors"
+                className="text-sm  hover:text-primary transition-colors"
               >
                 Listings
               </Link>
               <Link
                 to="/create-listing"
-                className="text-sm font-medium hover:text-primary transition-colors"
+                className="text-sm  hover:text-primary transition-colors"
               >
                 create-Listing
               </Link>
@@ -66,13 +67,13 @@ export const Navbar: React.FC = () => {
             <>
               <Link
                 to="/signup"
-                className="text-sm font-medium hover:text-primary transition-colors"
+                className="text-sm  hover:text-primary transition-colors"
               >
                 Register
               </Link>
               <Link
                 to="/signin"
-                className="text-sm font-medium hover:text-primary transition-colors"
+                className="text-sm  hover:text-primary transition-colors"
               >
                 Login
               </Link>
@@ -116,6 +117,8 @@ export const Navbar: React.FC = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
+        {/* MOBILE MENU TOGGLE (Only visible on small screens) */}
+        <MobileNav token={token} handleLogout={handleLogout} />
       </div>
     </nav>
   );
