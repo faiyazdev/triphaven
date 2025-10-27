@@ -1,6 +1,7 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, { Model, Schema, Types } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import type { IListing } from "./listing.model.js";
 
 export interface IUser {
   _id: mongoose.Types.ObjectId | string;
@@ -13,6 +14,7 @@ export interface IUser {
   provider: "google" | "manual";
   createdAt?: Date;
   updatedAt?: Date;
+  myListings?: (Types.ObjectId | IListing)[];
 }
 
 /**
@@ -66,6 +68,7 @@ const userSchema = new Schema<
       enum: ["google", "manual"],
       default: "manual",
     },
+    myListings: [{ type: Schema.Types.ObjectId, ref: "Listing" }],
   },
   { timestamps: true }
 );

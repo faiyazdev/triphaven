@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 const app = express();
 import userRoutes from "./routes/user.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import listingRoutes from "./routes/listing.routes.js";
 import cookieParser from "cookie-parser";
 
@@ -18,7 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 // Routes
-app.use("/api/auth", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/listings", listingRoutes);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

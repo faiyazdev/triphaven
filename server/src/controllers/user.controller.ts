@@ -1,189 +1,130 @@
 import type { Request, Response } from "express";
-import handleAsync from "../utils/HandleAsync.js";
 import User from "../models/user.model.js";
-import ExpressError from "../utils/ExpressError.js";
-import { signinUserSchema, signupUserSchema } from "../schemas/user.schema.js";
+import handleAsync from "../utils/HandleAsync.js";
 import { deleteFile, uploadToCloudinary } from "../utils/cloudinaryUpload.js";
-import jwt from "jsonwebtoken";
-const isProduction = process.env.NODE_ENV === "production";
-export const signup = handleAsync(async (req: Request, res: Response) => {
-  // 1️⃣ Validate input using Zod
-  const parsed = signupUserSchema.safeParse(req.body);
-  if (!parsed.success) {
-    // Validation failed
-    const firstIssue = parsed.error.issues[0];
-    throw new ExpressError(400, firstIssue.message);
-  }
 
-  const { name, username, email, password } = parsed.data;
+// ========================================================
+// 🧑‍💼 Get All Users (Admin Only)
+// ========================================================
+export const getAllUsers = handleAsync(async (req: Request, res: Response) => {
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "faiyaz@gmail.com";
 
-  // 2️⃣ Check if user already exists (username OR email)
-  const existingUser = await User.findOne({
-    $or: [{ username }, { email }],
-  });
-  if (existingUser) {
-    throw new ExpressError(400, "User already exists in the database");
-  }
-
-  const picture = req.file;
-  let pictureUrl;
-  if (picture) {
-    pictureUrl = await uploadToCloudinary(picture.path);
-  }
-
-  // 3️⃣ Create user
-  const newUser = new User({
-    username,
-    name,
-    email,
-    password,
-    picture: pictureUrl?.url || "",
-  });
-
-  const accessToken = newUser.generateAccessToken();
-  const refreshToken = newUser.generateRefreshToken();
-  newUser.refreshToken = refreshToken;
-  await newUser.save();
-  if (picture && pictureUrl) {
-    deleteFile(picture.path);
-  }
-  res.cookie("refresh-token", refreshToken, {
-    httpOnly: true,
-    secure: isProduction, // ✅ only true in production (HTTPS)
-    sameSite: isProduction ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
-  // 4️⃣ Respond
-  res.status(201).json({
-    success: true,
-    user: {
-      id: newUser._id,
-      name: newUser.name,
-      username: newUser.username,
-      email: newUser.email,
-    },
-    accessToken,
-  });
-});
-export const signin = handleAsync(async (req: Request, res: Response) => {
-  // 1️⃣ Validate input using Zod
-  const parsed = signinUserSchema.safeParse(req.body);
-  if (!parsed.success) {
-    // Validation failed
-    const firstIssue = parsed.error.issues[0];
-    throw new ExpressError(400, firstIssue.message);
-  }
-
-  const { email, password } = parsed.data;
-
-  // 2️⃣ Check if user already exists (username OR email)
-  const existingUser = await User.findOne({
-    email,
-  });
-  if (!existingUser) {
-    throw new ExpressError(400, "User doesn't exist in the database");
-  }
-
-  const isPasswordValid = await existingUser.isPasswordCorrect(password);
-  if (!isPasswordValid)
-    throw new ExpressError(
-      400,
-      "password isn't valid, please type in correct password"
-    );
-
-  const accessToken = existingUser.generateAccessToken();
-  const refreshToken = existingUser.generateRefreshToken();
-  existingUser.refreshToken = refreshToken;
-  await existingUser.save();
-
-  res.cookie("refresh-token", refreshToken, {
-    httpOnly: true,
-    secure: isProduction, // ✅ only true in production (HTTPS)
-    sameSite: isProduction ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
-  // 4️⃣ Respond
-  res.status(201).json({
-    success: true,
-    message: "user logged in successfully",
-    user: {
-      id: existingUser._id,
-      name: existingUser.name,
-      username: existingUser.username,
-      email: existingUser.email,
-    },
-    accessToken,
-  });
-});
-export const signout = handleAsync(async (req: Request, res: Response) => {
-  // 1️⃣ Find the user (optional, in case you want to invalidate the refresh token)
-  const user = await User.findById(req.user?.userId);
-  if (!user) {
-    throw new ExpressError(404, "User not found");
-  }
-
-  // 2️⃣ Remove refresh token from DB
-  user.refreshToken = "";
-  await user.save();
-
-  // 3️⃣ Clear the refresh-token cookie
-  res.clearCookie("refresh-token", {
-    httpOnly: true,
-    secure: isProduction, // ✅ only true in production (HTTPS)
-    sameSite: isProduction ? "none" : "lax",
-  });
-
-  // 4️⃣ Respond
-  res.status(200).json({
-    success: true,
-    message: "Signed out successfully",
-  });
-});
-export const refreshAccessToken = handleAsync(
-  async (req: Request, res: Response) => {
-    // 1️⃣ Get refresh token from cookies
-    console.log("refresh token endpoint", req.cookies);
-    const oldRefreshToken = req.cookies["refresh-token"];
-    if (!oldRefreshToken) {
-      return res
-        .status(401)
-        .json({ error: "Refresh token is missing or invalid" });
-    }
-
-    // 2️⃣ Verify refresh token
-    let decoded: any;
-    try {
-      decoded = jwt.verify(oldRefreshToken, process.env.REFRESH_TOKEN_SECRET!);
-    } catch (err) {
-      return res
-        .status(401)
-        .json({ error: "Invalid or expired refresh token" });
-    }
-
-    // 3️⃣ Find user and check token matches
-    const user = await User.findById(decoded.userId);
-    if (!user || user.refreshToken !== oldRefreshToken) {
-      return res.status(401).json({ error: "Refresh token is invalid" });
-    }
-    // 4️⃣ Generate new tokens
-    const newAccessToken = user.generateAccessToken();
-    const newRefreshToken = user.generateRefreshToken();
-
-    // 5️⃣ Update refresh token in DB
-    user.refreshToken = newRefreshToken;
-    await user.save();
-
-    // 6️⃣ Send cookie & response
-    res.cookie("refresh-token", newRefreshToken, {
-      httpOnly: true,
-      secure: isProduction, // ✅ only true in production (HTTPS)
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  if (req.user?.email !== ADMIN_EMAIL) {
+    return res.status(403).json({
+      success: false,
+      message: "Unauthorized access: Admin privileges required.",
     });
+  }
 
-    res.status(200).json({
+  const users = await User.find({})
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "listings",
+      populate: {
+        path: "author",
+        select: "name email",
+      },
+    })
+    .lean();
+
+  return res.status(200).json({
+    success: true,
+    count: users.length,
+    data: users,
+    message: users.length ? "Users fetched successfully." : "No users found.",
+  });
+});
+
+// ========================================================
+// 👤 Get Authenticated User Profile
+// ========================================================
+export const getMyProfile = handleAsync(async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized — please log in first.",
+    });
+  }
+
+  const userProfile = await User.findById(userId)
+    .populate({
+      path: "listings",
+      populate: {
+        path: "author",
+        select: "name email",
+      },
+    })
+    .lean();
+
+  if (!userProfile) {
+    return res.status(404).json({
+      success: false,
+      message: "User profile not found.",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: userProfile,
+    message: "User profile fetched successfully.",
+  });
+});
+
+// ========================================================
+// ✏️ Update Authenticated User Profile
+// ========================================================
+export const updateMyProfile = handleAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized — please log in first.",
+      });
+    }
+
+    // Whitelist allowed fields
+    const allowedUpdates = ["name", "bio", "location"];
+    const updates: Record<string, any> = {};
+
+    for (const key of allowedUpdates) {
+      if (req.body[key] !== undefined) {
+        updates[key] = req.body[key];
+      }
+    }
+
+    // ✅ Handle avatar upload if provided
+    if (req.file) {
+      // Upload new avatar to Cloudinary
+      const uploadResult = await uploadToCloudinary(req.file.path);
+
+      // delete the temp file
+      deleteFile(req.file.path);
+
+      // Assign Cloudinary URL to user
+      updates.avatar = uploadResult?.secure_url;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    return res.status(200).json({
       success: true,
-      accessToken: newAccessToken,
+      data: updatedUser,
+      message: "Profile updated successfully.",
     });
   }
 );
