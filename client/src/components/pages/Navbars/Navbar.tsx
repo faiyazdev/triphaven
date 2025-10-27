@@ -127,7 +127,11 @@ export const Navbar: React.FC = () => {
           </DropdownMenu>
         )}
         {/* MOBILE MENU TOGGLE (Only visible on small screens) */}
-        <MobileNav token={token} handleLogout={handleLogout} />
+        <MobileNav
+          token={token}
+          handleLogout={handleLogout}
+          email={user?.email}
+        />
       </div>
     </nav>
   );

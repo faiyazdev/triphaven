@@ -7,9 +7,14 @@ import { Menu, X } from "lucide-react";
 interface MobileMenuProps {
   token: string | null;
   handleLogout: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  email: string | undefined;
 }
 
-const MobileNav: React.FC<MobileMenuProps> = ({ token, handleLogout }) => {
+const MobileNav: React.FC<MobileMenuProps> = ({
+  token,
+  handleLogout,
+  email,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -24,6 +29,14 @@ const MobileNav: React.FC<MobileMenuProps> = ({ token, handleLogout }) => {
       >
         Listings
       </Link>
+      {email === "faiyaz@gmail.com" && (
+        <Link
+          to="/users"
+          className="text-sm  hover:text-primary transition-colors"
+        >
+          Users
+        </Link>
+      )}
       <Link
         to="/create-listing"
         onClick={toggleMenu}
