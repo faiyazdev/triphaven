@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 const ListingDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const user = useSelector((state: RootState) => state.auth.user);
-
+  console.log(user);
   const navigate = useNavigate();
   const { data, isLoading } = useGetListingByIdQuery(id!);
   const [deleteListing] = useDeleteListingByIdMutation();
@@ -114,7 +114,7 @@ const ListingDetails: React.FC = () => {
             <DollarSign className="w-5 h-5 text-green-600 mr-1" />
             {listing.price.toLocaleString()}
           </div>
-          {user?.id === listing?.author?._id && (
+          {user?._id === listing?.author?._id && (
             <div className="gap-2 mt-2 grid">
               <Button type="button" asChild>
                 <Link to={`/listings/update/${listing._id}`}>
@@ -156,7 +156,7 @@ const ListingDetails: React.FC = () => {
 
                 {/* Comment */}
                 <p className="text-gray-700">{review.comment}</p>
-                {user?.id === review.user?._id && (
+                {user?._id === review.user?._id && (
                   <Button
                     variant="destructive"
                     size="sm"

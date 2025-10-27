@@ -54,7 +54,7 @@ export default function Login() {
         dispatch(
           setCredentials({
             user: {
-              id: user._id,
+              _id: user.id,
               name: user.name,
               email: user.email,
             },

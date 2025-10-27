@@ -6,7 +6,12 @@ export const authApi = baseApi.injectEndpoints({
     login: builder.mutation<
       {
         accessToken: string;
-        user: UserType;
+        user: {
+          id: string;
+          name: string;
+          username?: string;
+          email: string;
+        };
         success: boolean;
         message: string;
       },
