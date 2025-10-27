@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import User from "../models/user.model.js";
+import User, { type IUser } from "../models/user.model.js";
 import handleAsync from "../utils/HandleAsync.js";
 import { deleteFile, uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 
@@ -22,7 +22,7 @@ export const getAllUsers = handleAsync(async (req: Request, res: Response) => {
       path: "listings",
       populate: { path: "author", select: "name email" },
     })
-    .lean()) as (User & { listings?: any[] })[];
+    .lean()) as (IUser & { listings?: any[] })[];
 
   const normalizedUsers = users.map((user) => ({
     ...user,
