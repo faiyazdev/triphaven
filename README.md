@@ -4,6 +4,8 @@
 
 The platform allows users to list, discover, and manage vacation rentals — offering the core Airbnb-like experience (without payments).
 
+🚀 **[Visit TripHaven Live Site](https://triphaven-faiyaz.vercel.app/)**
+
 ---
 
 ## ✨ Features
@@ -58,12 +60,3 @@ The platform allows users to list, discover, and manage vacation rentals — off
 
 **Faiyaz**  
 🌐 Web Developer | Passionate about building full-stack, scalable web apps  
-📧 [Email me](mailto:your-email@example.com)  
-💼 [LinkedIn](https://www.linkedin.com/in/yourprofile)  
-💻 [GitHub](https://github.com/<your-username>)  
-
-
-## 📄 License
-
-This project is licensed under the **MIT License** — feel free to use and modify it.
-
