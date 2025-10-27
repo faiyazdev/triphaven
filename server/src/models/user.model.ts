@@ -111,7 +111,7 @@ userSchema.methods.generateAccessToken = function (this: IUser): string {
   if (!secret)
     throw new Error("ACCESS_TOKEN_SECRET is not defined in environment");
   return jwt.sign({ userId: this._id, email: this.email }, secret, {
-    expiresIn: "15m",
+    expiresIn: "15s",
   });
 };
 

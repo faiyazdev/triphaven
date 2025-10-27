@@ -5,7 +5,7 @@ import ExpressError from "../utils/ExpressError.js";
 import { signinUserSchema, signupUserSchema } from "../schemas/user.schema.js";
 import { deleteFile, uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 import jwt from "jsonwebtoken";
-
+const isProduction = process.env.NODE_ENV === "production";
 export const signup = handleAsync(async (req: Request, res: Response) => {
   // 1️⃣ Validate input using Zod
   const parsed = signupUserSchema.safeParse(req.body);
@@ -49,8 +49,8 @@ export const signup = handleAsync(async (req: Request, res: Response) => {
   }
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: isProduction, // ✅ only true in production (HTTPS)
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   // 4️⃣ Respond
@@ -98,8 +98,8 @@ export const signin = handleAsync(async (req: Request, res: Response) => {
 
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: isProduction, // ✅ only true in production (HTTPS)
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   // 4️⃣ Respond
@@ -129,8 +129,8 @@ export const signout = handleAsync(async (req: Request, res: Response) => {
   // 3️⃣ Clear the refresh-token cookie
   res.clearCookie("refresh-token", {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: isProduction, // ✅ only true in production (HTTPS)
+    sameSite: isProduction ? "none" : "lax",
   });
 
   // 4️⃣ Respond
@@ -176,8 +176,8 @@ export const refreshAccessToken = handleAsync(
     // 6️⃣ Send cookie & response
     res.cookie("refresh-token", newRefreshToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction, // ✅ only true in production (HTTPS)
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
