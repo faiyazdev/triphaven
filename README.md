@@ -13,52 +13,54 @@ The platform allows users to list, discover, and manage vacation rentals — off
 ## ✨ Features
 
 ### 🧭 Core
-- 🔐 **User Authentication** (Signup, Login, Logout) using JWT & Cookies  
-- 🏠 **Property Listings** — Create, edit, and view listings  
-- 📸 **Image Uploads** — Integrated with Cloudinary  
-- 🌎 **Responsive UI** — Clean, modern design for all screen sizes  
-- 💬 **Validation** — Zod schema validation for safe data handling  
-- 🗂️ **Protected Routes** — Auth middleware for secure endpoints  
+
+- 🔐 **User Authentication** (Signup, Login, Logout) using JWT & Cookies
+- 🏠 **Property Listings** — Create, edit, and view listings
+- 📸 **Image Uploads** — Integrated with Cloudinary
+- 🌎 **Responsive UI** — Clean, modern design for all screen sizes
+- 💬 **Validation** — Zod schema validation for safe data handling
+- 🗂️ **Protected Routes** — Auth middleware for secure endpoints .
 
 ### ⚙️ Backend Highlights
-- 🧱 Node.js + Express.js + TypeScript  
-- 🗄️ MongoDB + Mongoose  
-- 🔑 JWT authentication with refresh tokens  
-- ☁️ Cloudinary integration for media uploads  
-- 🧾 Nodemailer for email verification and password resets  
-- 🧰 Scalable folder structure for real-world production apps  
 
-### 💻 Frontend Highlights *(coming soon)*
-- ⚛️ React + TypeScript  
-- 🌐 Axios for API communication  
-- 🧭 React Router for navigation  
-- 💅 TailwindCSS for styling  
+- 🧱 Node.js + Express.js + TypeScript
+- 🗄️ MongoDB + Mongoose
+- 🔑 JWT authentication with refresh tokens
+- ☁️ Cloudinary integration for media uploads
+- 🧾 Nodemailer for email verification and password resets
+- 🧰 Scalable folder structure for real-world production apps
+
+### 💻 Frontend Highlights _(coming soon)_
+
+- ⚛️ React + TypeScript
+- 🌐 Axios for API communication
+- 🧭 React Router for navigation
+- 💅 TailwindCSS for styling
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|-------------|
-| **Frontend** | React, TypeScript, TailwindCSS |
-| **Backend** | Node.js, Express.js, TypeScript |
-| **Database** | MongoDB (Mongoose) |
-| **Auth** | JWT, Cookies |
-| **Validation** | Zod |
-| **File Uploads** | Multer + Cloudinary |
-| **Email Service** | Nodemailer |
-| **Deployment** | (Planned: Render / Vercel) |
+| Layer             | Technology                      |
+| ----------------- | ------------------------------- |
+| **Frontend**      | React, TypeScript, TailwindCSS  |
+| **Backend**       | Node.js, Express.js, TypeScript |
+| **Database**      | MongoDB (Mongoose)              |
+| **Auth**          | JWT, Cookies                    |
+| **Validation**    | Zod                             |
+| **File Uploads**  | Multer + Cloudinary             |
+| **Email Service** | Nodemailer                      |
+| **Deployment**    | (Planned: Render / Vercel)      |
 
 ## 🧱 Future Improvements
 
-- 💳 Payment gateway integration (Stripe or PayPal)  
-- 🧭 Advanced search and filters  
-- ⭐ Reviews and ratings system  
-- 💬 Real-time chat between hosts and guests  
-- 🗺️ Map integration (Google Maps / Leaflet)  
-
+- 💳 Payment gateway integration (Stripe or PayPal)
+- 🧭 Advanced search and filters
+- ⭐ Reviews and ratings system
+- 💬 Real-time chat between hosts and guests
+- 🗺️ Map integration (Google Maps / Leaflet)
 
 ## 🧑‍💻 Author
 
 **Faiyaz**  
-🌐 Web Developer | Passionate about building full-stack, scalable web apps  
+🌐 Web Developer | Passionate about building full-stack, scalable web apps
