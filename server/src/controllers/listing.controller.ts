@@ -153,7 +153,7 @@ export const updateListing = handleAsync(
       });
     }
 
-    if (existingListing.author.toString() !== req.user?.userId) {
+    if (existingListing.author?._id.toString() !== req.user?.userId) {
       return res.status(403).json({
         success: false,
         message: "Not authorized to update this listing",
@@ -212,7 +212,9 @@ export const deleteListing = handleAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
     // 1️⃣ Find the listing
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(id)
+      .populate("reviews")
+      .populate("author");
 
     if (!listing) {
       return res.status(404).json({
@@ -220,7 +222,7 @@ export const deleteListing = handleAsync(
         message: "Listing not found!",
       });
     }
-    if (listing.author.toString() !== req.user?.userId) {
+    if (listing.author?._id.toString() !== req.user?.userId) {
       return res.status(403).json({
         success: false,
         message: "Not authorized to delete this listing",
@@ -234,6 +236,10 @@ export const deleteListing = handleAsync(
         console.error("❌ Failed to delete image from Cloudinary:", error);
         // Not fatal — we can still delete the listing
       }
+    }
+    // Ensure reviews array exists
+    if (!listing.reviews) {
+      listing.reviews = [];
     }
     // reviews as well
     if (listing.reviews.length) {

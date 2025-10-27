@@ -3,20 +3,37 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export interface IUser {
+  _id: mongoose.Types.ObjectId | string;
   username: string;
   name?: string;
   email: string;
   picture?: string;
-  password: string;
-  refreshToken: string;
+  password?: string; // optional because OAuth users may not have a password
+  refreshToken?: string;
   provider: "google" | "manual";
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
+/**
+ * Instance methods for a User document
+ */
+export interface IUserMethods {
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
 }
 
-const userSchema = new Schema<IUser>(
+/**
+ * If you prefer, you can create a type alias for the full model:
+ * type UserModel = Model<IUser, {}, IUserMethods>;
+ */
+
+const userSchema = new Schema<
+  IUser,
+  Model<IUser, {}, IUserMethods>,
+  IUserMethods
+>(
   {
     username: {
       type: String,
@@ -45,7 +62,6 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       trim: true,
-      // required: true,
     },
     refreshToken: {
       type: String,
@@ -58,32 +74,57 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
-userSchema.pre<IUser>("save", function (next) {
-  if (!this.isModified("password")) return next();
 
-  this.password = bcrypt.hashSync(this.password, 10);
-  next();
+/**
+ * Pre-save hook — use async function and type `this` so TS knows about `isModified`.
+ * We hash the password only if it was modified.
+ */
+userSchema.pre("save", async function (next) {
+  // TypeScript: 'this' is a Mongoose Document with IUser properties
+  const doc = this as mongoose.Document & IUser;
+
+  try {
+    if (!doc.isModified("password") || !doc.password) {
+      return next();
+    }
+
+    const saltRounds = 10;
+    doc.password = await bcrypt.hash(doc.password, saltRounds);
+    next();
+  } catch (err) {
+    next(err as any);
+  }
 });
-
+/**
+ * Instance methods
+ */
 userSchema.methods.isPasswordCorrect = async function (
+  this: IUser & IUserMethods,
   password: string
 ): Promise<boolean> {
+  if (!this.password) return false; // no password stored (e.g. google provider)
   return bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = function (): string {
-  return jwt.sign(
-    { userId: this._id, email: this.email },
-    process.env.ACCESS_TOKEN_SECRET!,
-    { expiresIn: "15m" }
-  );
-};
-
-userSchema.methods.generateRefreshToken = function (): string {
-  return jwt.sign({ userId: this._id }, process.env.REFRESH_TOKEN_SECRET!, {
-    expiresIn: "7d",
+userSchema.methods.generateAccessToken = function (this: IUser): string {
+  const secret = process.env.ACCESS_TOKEN_SECRET;
+  if (!secret)
+    throw new Error("ACCESS_TOKEN_SECRET is not defined in environment");
+  return jwt.sign({ userId: this._id, email: this.email }, secret, {
+    expiresIn: "15m",
   });
 };
 
-const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
+userSchema.methods.generateRefreshToken = function (this: IUser): string {
+  const secret = process.env.REFRESH_TOKEN_SECRET;
+  if (!secret)
+    throw new Error("REFRESH_TOKEN_SECRET is not defined in environment");
+  return jwt.sign({ userId: this._id }, secret, { expiresIn: "7d" });
+};
+
+const User = mongoose.model<IUser, Model<IUser, {}, IUserMethods>>(
+  "User",
+  userSchema
+);
+
 export default User;

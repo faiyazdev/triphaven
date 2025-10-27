@@ -15,13 +15,15 @@ const reviewSchema = z.object({
 export const createReview = handleAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   // Check if listing exists
-  const listing = await Listing.findById(id).populate({
-    path: "reviews",
-    populate: {
-      path: "user",
-      select: "username email", // optional — only bring what you need
-    },
-  });
+  const listing = await Listing.findById(id)
+    .populate({
+      path: "reviews",
+      populate: {
+        path: "user",
+        select: "username email", // optional — only bring what you need
+      },
+    })
+    .populate("author");
   if (!listing) {
     return res.status(404).json({ message: "Listing not found" });
   }
@@ -37,8 +39,12 @@ export const createReview = handleAsync(async (req: Request, res: Response) => {
     rating: parsed.data.rating,
     user: req.user?.userId,
   });
-  // Push review ID to the listing’s reviews array
-  listing.reviews.push(newReview._id);
+  // Ensure reviews array exists
+  if (!listing.reviews) {
+    listing.reviews = [];
+  }
+  const reviewId: Types.ObjectId = newReview._id as Types.ObjectId;
+  listing.reviews.push(reviewId);
   await listing.save();
 
   res.status(200).json({
