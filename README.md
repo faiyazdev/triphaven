@@ -4,7 +4,9 @@
 
 The platform allows users to list, discover, and manage vacation rentals — offering the core Airbnb-like experience (without payments).
 
-🚀 **[Visit TripHaven Live Site](https://triphaven-faiyaz.vercel.app/)**
+<p>
+  🚀 <a href="https://triphaven-faiyaz.vercel.app/" target="_blank"><strong>Visit TripHaven Live Site</strong></a>
+</p>
 
 ---
 
