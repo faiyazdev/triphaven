@@ -1,7 +1,7 @@
 import { useGetAllUsersQuery } from "@/redux/api/services/userApi";
-import type { IUser } from "@/types/user.types";
 import React from "react";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const UserList: React.FC = () => {
   const { data, isLoading, isError, error } = useGetAllUsersQuery();
@@ -45,17 +45,22 @@ const UserList: React.FC = () => {
         <p className="text-gray-500">No users found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {users.map((user: IUser) => (
+          {users.map((user) => (
             <div
               key={user._id}
               className="border rounded-2xl p-4 shadow-sm hover:shadow-md transition"
             >
               <div className="flex items-center gap-3">
-                <img
-                  src={user.avatar || "/default-avatar.png"}
-                  alt={user.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
+                <Avatar>
+                  {user.avatar ? (
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                  ) : (
+                    <AvatarFallback>
+                      {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+
                 <div>
                   <h2 className="font-semibold text-lg">{user.name}</h2>
                   <p className="text-sm text-gray-500">{user.email}</p>

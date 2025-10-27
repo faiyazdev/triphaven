@@ -8,7 +8,7 @@ export interface IUser {
   role?: "user" | "admin";
   createdAt?: string;
   updatedAt?: string;
-  listings?: IListing[];
+  listings?: IListing[]; // optional
 }
 
 export interface IListing {
