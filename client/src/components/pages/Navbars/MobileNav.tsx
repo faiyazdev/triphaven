@@ -32,6 +32,7 @@ const MobileNav: React.FC<MobileMenuProps> = ({
       {email === "faiyaz@gmail.com" && (
         <Link
           to="/users"
+          onClick={toggleMenu}
           className="block py-2 text-base font-medium hover:text-primary border-b border-border"
         >
           Users
