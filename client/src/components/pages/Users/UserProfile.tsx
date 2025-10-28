@@ -38,7 +38,7 @@ const UserProfile: React.FC = () => {
   console.log(user);
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-full mx-auto p-6 lg:grid lg:grid-cols-2 lg:gap-10">
       <Card className="rounded-2xl shadow-md">
         <CardHeader className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Avatar className="w-20 h-20">

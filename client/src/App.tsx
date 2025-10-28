@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <main className="sm:p-6 p-4">
+      <main className="sm:p-6 p-4 text-custom font-['Geist']">
         <Routes>
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>

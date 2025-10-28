@@ -66,7 +66,7 @@ const UpdateProfileForm: React.FC = () => {
   }
 
   return (
-    <Card className="max-w-xl mx-auto mt-8 rounded-2xl shadow-sm">
+    <Card className="w-full p-6 mx-auto mt-8 lg:mt-0 rounded-2xl shadow-sm">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">Update Profile</CardTitle>
       </CardHeader>
