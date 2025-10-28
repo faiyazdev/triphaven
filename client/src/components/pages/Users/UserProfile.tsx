@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, AlertCircle } from "lucide-react";
 import type { IUser } from "@/types/user.types";
+import UpdateProfileForm from "./UpdateProfile";
 
 const UserProfile: React.FC = () => {
   const { data, isLoading, isError } = useGetMyProfileQuery();
@@ -82,6 +83,7 @@ const UserProfile: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+      <UpdateProfileForm />
     </div>
   );
 };

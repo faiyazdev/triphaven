@@ -22,7 +22,7 @@ export const userApi = baseApi.injectEndpoints({
     updateMyProfile: builder.mutation<IUpdateProfileResponse, FormData>({
       query: (formData) => ({
         url: "/users/me",
-        method: "PATCH",
+        method: "PUT",
         body: formData,
       }),
       invalidatesTags: ["User"],

@@ -106,7 +106,10 @@ export const Navbar: React.FC = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer hover:opacity-80 transition">
-                <AvatarImage src="/avatars/default.png" alt="Profile" />
+                <AvatarImage
+                  src={user?.avatar ? user.avatar : "/avatars/default.png"}
+                  alt="Profile"
+                />
                 <AvatarFallback>F</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>

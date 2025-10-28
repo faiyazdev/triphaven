@@ -11,6 +11,7 @@ export const authApi = baseApi.injectEndpoints({
           name: string;
           username?: string;
           email: string;
+          avatar?: string;
         };
         success: boolean;
         message: string;
