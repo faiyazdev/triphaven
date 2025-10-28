@@ -50,14 +50,9 @@ export const getMyProfile = handleAsync(async (req: Request, res: Response) => {
     });
   }
 
+  // Fetch user including listings (to count them)
   const userProfile = await User.findById(userId)
-    .populate({
-      path: "listings",
-      populate: {
-        path: "author",
-        select: "name email",
-      },
-    })
+    .select("-password -refreshToken") // fixed field name
     .lean();
 
   if (!userProfile) {
@@ -67,9 +62,18 @@ export const getMyProfile = handleAsync(async (req: Request, res: Response) => {
     });
   }
 
+  // ✅ Compute listings length safely
+  const listingsLength = Array.isArray(userProfile.listings)
+    ? userProfile.listings.length
+    : 0;
+
+  // ✅ Send computed value without mutating DB object
   return res.status(200).json({
     success: true,
-    data: userProfile,
+    data: {
+      ...userProfile,
+      listingsLength,
+    },
     message: "User profile fetched successfully.",
   });
 });

@@ -6,10 +6,12 @@ import {
   getMyProfile,
   updateMyProfile,
 } from "../controllers/user.controller.js";
+import { getMyListings } from "../controllers/listing.controller.js";
 const router = express.Router();
 
 router.get("/", authenticate, getAllUsers);
-router.get("me", authenticate, getMyProfile);
+router.get("/me", authenticate, getMyProfile);
 router.put("/me", authenticate, upload.single("avatar"), updateMyProfile);
+router.get("/me-listings", authenticate, getMyListings);
 
 export default router;

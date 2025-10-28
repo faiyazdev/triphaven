@@ -1,9 +1,12 @@
+import type { Types } from "mongoose";
 import { cloudinary } from "../config/cloudinary.js";
 import Listing from "../models/listing.model.js";
 import Review from "../models/Review.model.js";
+import User from "../models/user.model.js";
 import { deleteFile, uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 import handleAsync from "../utils/HandleAsync.js";
 import type { Request, Response } from "express";
+import mongoose from "mongoose";
 // h
 export const getAllListings = handleAsync(
   async (req: Request, res: Response) => {
@@ -81,6 +84,55 @@ export const getListingById = handleAsync(
   }
 );
 
+export const getMyListings = handleAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+
+    // ✅ Validate ObjectId
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or missing user ID.",
+      });
+    }
+
+    // ✅ Fetch user with their listings and reviews (nested population)
+    const userWithListings = await User.findById(userId)
+      .select("listings name username email")
+      .populate({
+        path: "listings",
+        populate: {
+          path: "reviews",
+          populate: {
+            path: "user",
+            select: "username email",
+          },
+        },
+      })
+      .lean();
+
+    // ✅ Handle not found
+    if (!userWithListings) {
+      return res.status(404).json({
+        success: false,
+        message: "User or listings not found.",
+      });
+    }
+
+    // ✅ Extract listings
+    const listings = userWithListings.listings || [];
+
+    res.status(200).json({
+      success: true,
+      count: listings.length,
+      data: listings,
+      message: listings.length
+        ? "Listings fetched successfully."
+        : "No listings found for this user.",
+    });
+  }
+);
+
 export const createListing = handleAsync(
   async (req: Request, res: Response) => {
     const { title, description, price, location, country } = req.body;
@@ -128,7 +180,19 @@ export const createListing = handleAsync(
       country,
       author: req.user?.userId,
     });
-
+    const user = await User.findById(req.user?.userId).populate("listings");
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "user doesn't exist",
+      });
+    }
+    const listingId: Types.ObjectId = newListing._id as Types.ObjectId;
+    if (!user.listings) {
+      user.listings = [];
+    }
+    user.listings.push(listingId);
+    await user.save();
     // ✅ 4️⃣ Respond to client
     res.status(201).json({
       success: true,
