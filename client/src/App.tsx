@@ -8,6 +8,8 @@ import Listings from "./components/pages/Listings/Listings";
 import ListingDetails from "./components/pages/Listings/ListingDetails";
 import UpdateListing from "./components/pages/Listings/UpdateListing";
 import UserList from "./components/pages/Users/UserList";
+import UserProfile from "./components/pages/Users/UserProfile";
+import UserListings from "./components/pages/Users/UserListings";
 function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -18,6 +20,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Listings />} />
             <Route path="/users" element={<UserList />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/my-listings" element={<UserListings />} />
             <Route path="/listings/:id" element={<ListingDetails />} />
             <Route path="/listings/update/:id" element={<UpdateListing />} />
             <Route path="/create-listing" element={<CreateListing />} />

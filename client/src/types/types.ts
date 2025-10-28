@@ -16,9 +16,12 @@ export interface IListing {
 
 export interface IReview {
   _id: string;
-  comment: string;
   rating: number;
-  user: UserType;
+  comment: string;
+  user: {
+    username: string;
+    email: string;
+  };
   createdAt?: Date;
 }
 

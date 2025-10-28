@@ -1,6 +1,7 @@
 export interface IUser {
   _id: string;
   name: string;
+  username: string;
   email: string;
   avatar?: string;
   bio?: string;
@@ -9,6 +10,7 @@ export interface IUser {
   createdAt?: string;
   updatedAt?: string;
   listings?: IListing[]; // optional
+  listingsLength: number;
 }
 
 export interface IListing {

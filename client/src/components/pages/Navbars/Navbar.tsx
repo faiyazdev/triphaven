@@ -114,10 +114,20 @@ export const Navbar: React.FC = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <a href="/profile">Profile</a>
+                <Link
+                  to="/profile"
+                  className="text-sm  hover:text-primary transition-colors"
+                >
+                  Profile
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <a href="/my-listings">My Listings</a>
+                <Link
+                  to="/my-listings"
+                  className="text-sm  hover:text-primary transition-colors"
+                >
+                  My-Listings
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>

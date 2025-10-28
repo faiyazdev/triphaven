@@ -23,7 +23,7 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
         <p className="mt-2 text-gray-700">{listing.description}</p>
         <p className="mt-2 font-bold">${listing.price} / night</p>
       </div>
-      <Link to={`listings/${listing._id}`}>
+      <Link to={`/listings/${listing._id}`}>
         <Button variant={"outline"}>View more!</Button>
       </Link>
     </div>

@@ -19,6 +19,12 @@ export const listingApi = baseApi.injectEndpoints({
       query: (id) => `/listings/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Listing", id }],
     }),
+    getUserListings: builder.query<
+      { data: IListing[]; success: boolean; message: string },
+      void
+    >({
+      query: () => `/users/me-listings`,
+    }),
     createListing: builder.mutation<
       { data: IListing; success: boolean; message: string },
       FormData
@@ -97,5 +103,6 @@ export const {
   useUpdateListingByIdMutation,
   useCreateListingMutation,
   useAddReviewMutation,
+  useGetUserListingsQuery,
   useDeleteReviewMutation,
 } = listingApi;
