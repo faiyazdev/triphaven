@@ -7,13 +7,28 @@ import authRoutes from "./routes/auth.routes.js";
 import listingRoutes from "./routes/listing.routes.js";
 import cookieParser from "cookie-parser";
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://triphaven-faiyaz.vercel.app",
+];
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://triphaven-faiyaz.vercel.app"],
-    credentials: true,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true, // important if you’re using cookies / sessions / auth
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// ✅ Always handle preflight requests
+app.options("*", cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
