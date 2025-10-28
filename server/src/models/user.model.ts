@@ -7,6 +7,7 @@ export interface IUser {
   _id: mongoose.Types.ObjectId | string;
   username: string;
   name?: string;
+  bio?: string;
   email: string;
   avatar?: string;
   password?: string; // optional because OAuth users may not have a password
@@ -44,6 +45,10 @@ const userSchema = new Schema<
       type: String,
       trim: true,
       lowercase: true,
+    },
+    bio: {
+      type: String,
+      trim: true,
     },
     email: {
       type: String,

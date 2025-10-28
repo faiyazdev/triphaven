@@ -25,10 +25,10 @@ export const signup = handleAsync(async (req: Request, res: Response) => {
     throw new ExpressError(400, "User already exists in the database");
   }
 
-  const picture = req.file;
-  let pictureUrl;
-  if (picture) {
-    pictureUrl = await uploadToCloudinary(picture.path);
+  const avatar = req.file;
+  let avatarUrl;
+  if (avatar) {
+    avatarUrl = await uploadToCloudinary(avatar.path);
   }
 
   // 3️⃣ Create user
@@ -37,15 +37,15 @@ export const signup = handleAsync(async (req: Request, res: Response) => {
     name,
     email,
     password,
-    picture: pictureUrl?.url || "",
+    avatar: avatarUrl?.url || "",
   });
 
   const accessToken = newUser.generateAccessToken();
   const refreshToken = newUser.generateRefreshToken();
   newUser.refreshToken = refreshToken;
   await newUser.save();
-  if (picture && pictureUrl) {
-    deleteFile(picture.path);
+  if (avatar && avatarUrl) {
+    deleteFile(avatar.path);
   }
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
@@ -61,6 +61,7 @@ export const signup = handleAsync(async (req: Request, res: Response) => {
       name: newUser.name,
       username: newUser.username,
       email: newUser.email,
+      avatar: newUser.avatar,
     },
     accessToken,
   });
@@ -111,6 +112,7 @@ export const signin = handleAsync(async (req: Request, res: Response) => {
       name: existingUser.name,
       username: existingUser.username,
       email: existingUser.email,
+      avatar: existingUser.avatar,
     },
     accessToken,
   });
