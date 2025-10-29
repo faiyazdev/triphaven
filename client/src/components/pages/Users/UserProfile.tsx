@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import type { IUser } from "@/types/user.types";
 import UpdateProfileForm from "./UpdateProfile";
-import UpdateProfileSkeleton from "@/components/skeletons/UserProfileSkeleton";
+import UpdateProfileSkeleton from "@/components/skeletons/UpdateProfileSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const UserProfile: React.FC = () => {

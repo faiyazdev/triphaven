@@ -42,13 +42,13 @@ export const Navbar: React.FC = () => {
     }
   };
   return (
-    <nav className="flex text-custom font-['Geist'] items-center justify-between px-6 py-3 border-b bg-background sticky top-0 z-50">
+    <nav className="flex text-custom font-['Roboto'] items-center justify-between px-6 py-3 border-b bg-background sticky top-0 z-50">
       {/* LEFT SIDE */}
       <div className="flex items-center space-x-6">
         <Link to="/" className="text-xl font-semibold">
           TripHaven
         </Link>
-        <div className="ml-14 hidden md:flex font-semibold capitalize space-x-4">
+        <div className="ml-14 hidden md:flex capitalize space-x-4">
           {token ? (
             <>
               <Link
