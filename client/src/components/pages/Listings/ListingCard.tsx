@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import type { IListing } from "@/types/types";
 import React from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom"; // Changed to react-router-dom for standard usage if not using Next.js router
+import { MapPin } from "lucide-react"; // 📌 Import icons
 
 interface ListingCardProps {
   listing: IListing;
@@ -9,25 +10,29 @@ interface ListingCardProps {
 
 const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
   return (
-    <div className="border text-custom  rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="border bg-card text-card-foreground rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <img
-        src={listing.image?.url}
+        src={listing.image?.url || "placeholder-image-url"} // Added a placeholder in case url is missing
         alt={listing.title}
         className="w-full h-48 object-cover"
       />
-      <div className="p-4">
-        <h2 className="text-lg">{listing.title}</h2>
-        <p className=" text-sm">
-          {listing.location}, {listing.country}
-        </p>
-        <p className="mt-2 text-sm min-h-[40px]">
-          {listing.description.length > 100
-            ? listing.description.slice(0, 100) + "..."
-            : listing.description}
-        </p>
-        <p className="mt-2 mb-2">${listing.price} / night</p>
-        <Link to={`/listings/${listing._id}`}>
-          <Button variant={"outline"}>View more!</Button>
+      <div className="p-4 space-y-3">
+        {" "}
+        {/* Added space-y for better vertical rhythm */}
+        <h2 className="text-xl font-semibold truncate">{listing.title}</h2>
+        {/* Location Row with Icon */}
+        <div className="flex items-center text-sm">
+          <MapPin className="w-4 h-4 mr-2 text-blue-500" /> {/* 📌 Icon */}
+          <p className="truncate">
+            {listing.location}, {listing.country}
+          </p>
+        </div>
+        <Link to={`/listings/${listing._id}`} className="block pt-2">
+          {" "}
+          {/* Increased link margin */}
+          <Button variant={"outline"} className="w-full">
+            View more!
+          </Button>
         </Link>
       </div>
     </div>

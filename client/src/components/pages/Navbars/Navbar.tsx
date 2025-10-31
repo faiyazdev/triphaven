@@ -42,31 +42,28 @@ export const Navbar: React.FC = () => {
     }
   };
   return (
-    <nav className="flex text-custom font-['Roboto'] items-center justify-between px-6 py-3 border-b bg-background sticky top-0 z-50">
+    <nav className="flex font-medium text-custom font-['Roboto'] items-center justify-between px-6 py-3  sticky top-0 z-50 glass-header-util">
       {/* LEFT SIDE */}
       <div className="flex items-center space-x-6">
         <Link to="/" className="text-xl font-semibold">
           TripHaven
         </Link>
-        <div className="ml-14 hidden md:flex capitalize space-x-4">
+        <div className="ml-14 hidden font-medium md:flex capitalize space-x-4">
           {token ? (
             <>
-              <Link
-                to="/"
-                className="text-sm  hover:text-primary transition-colors"
-              >
+              <Link to="/" className="hover:text-primary transition-colors">
                 Listings
               </Link>
               <Link
                 to="/create-listing"
-                className="text-sm  hover:text-primary transition-colors"
+                className="hover:text-primary transition-colors"
               >
                 create-Listing
               </Link>
               {user?.email === "faiyaz@gmail.com" && (
                 <Link
                   to="/users"
-                  className="text-sm  hover:text-primary transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   Users
                 </Link>

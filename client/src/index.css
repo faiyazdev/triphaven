@@ -46,9 +46,9 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.1943 0.0176 209.06);
+  --card: oklch(0.9623 0.0121 296.35);
+  --card-foreground: oklch(0.205 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
@@ -81,10 +81,10 @@
 
 .dark {
   --custom: oklch(100% 0.00011 271.152);
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
+  --background: oklch(0.1943 0.0176 209.06);
+  --foreground: oklch(0.9623 0.0121 296.35);
+  --card: oklch(19.2% 0.02275 211.003);
+  --card-foreground: oklch(1 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
@@ -116,7 +116,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 font-normal;
   }
   body {
     @apply bg-background text-foreground;
@@ -130,5 +130,15 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2; /* Current browsers */
     line-clamp: 2; /* Future standard */
+  }
+}
+@layer components {
+  .glass-header-util {
+    /* The core glass effect utilities */
+    @apply sticky top-0 z-50 
+           backdrop-blur-lg 
+           bg-background/80 
+           shadow-sm 
+           border-b border-white/10;
   }
 }
